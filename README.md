@@ -1,4 +1,4 @@
-# flutter_six_paths_state
+# Flutter's Six Paths of State
 
 A new Flutter project.
 
