@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:provider/provider.dart';
 
-import 'models/user.dart';
-import 'state/user_state.dart';
+import '../shared/models/user.dart';
+import 'providers/user_provider.dart';
 
-class StateApp extends StatelessWidget {
-  const StateApp({Key key}) : super(key: key);
+class ProviderApp extends StatelessWidget {
+  const ProviderApp({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => UserState(),
+      create: (_) => UserProvider(),
       child: MaterialApp(
-        title: 'State App',
+        title: 'Provider',
         theme: ThemeData.dark(),
         home: _Home(),
       ),
@@ -30,11 +30,13 @@ class _Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = context.select((UserState state) => state.currentUser);
+    final currentUser = context.select(
+      (UserProvider provider) => provider.currentUser,
+    );
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(title: const Text('State Bar')),
+      appBar: AppBar(title: const Text('Provider')),
       drawer: _MyDrawer(),
       body: Center(child: Text(currentUser?.email ?? 'no-user')),
       floatingActionButton: FloatingActionButton.extended(
@@ -97,7 +99,7 @@ class __UserCardState extends State<_UserCard> {
                       return;
                     } else {
                       _formKey.currentState.save();
-                      context.read<UserState>().addUser(
+                      context.read<UserProvider>().addUser(
                             User(
                               name: name,
                               email: email,
@@ -123,7 +125,7 @@ class _MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = Provider.of<UserState>(context);
+    final provider = Provider.of<UserProvider>(context);
 
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
@@ -138,18 +140,18 @@ class _MyDrawer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    state.currentUser?.email ?? 'no-user',
+                    provider.currentUser?.email ?? 'no-user',
                     style: TextStyle(color: Colors.black),
                   ),
                 ],
               ),
             ),
-            if (state.users != null)
-              for (var user in state.users)
+            if (provider.users != null)
+              for (var user in provider.users)
                 ListTile(
                   title: Text(user.name),
                   subtitle: Text(user.email),
-                  onTap: () => context.read<UserState>().currentUser = user,
+                  onTap: () => context.read<UserProvider>().currentUser = user,
                 )
           ],
         ),

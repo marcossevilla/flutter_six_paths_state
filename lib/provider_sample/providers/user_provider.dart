@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
-import '../models/user.dart';
+import '../../shared/models/user.dart';
 
-class UserState with ChangeNotifier {
+class UserProvider with ChangeNotifier {
   User _currentUser;
   User get currentUser => _currentUser;
   set currentUser(User user) {
