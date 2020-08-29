@@ -10,7 +10,7 @@ class UserState with ChangeNotifier {
     notifyListeners();
   }
 
-  List<User> _users;
+  List<User> _users = [];
   List<User> get users => _users;
 
   void addUser(User user) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -35,7 +36,7 @@ class _Home extends StatelessWidget {
       key: _scaffoldKey,
       appBar: AppBar(title: const Text('State Bar')),
       drawer: _MyDrawer(),
-      body: Center(child: Text(currentUser?.id ?? 'no-user')),
+      body: Center(child: Text(currentUser?.email ?? 'no-user')),
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('New user'),
         onPressed: () {
@@ -92,13 +93,18 @@ class __UserCardState extends State<_UserCard> {
                 ),
                 FlatButton(
                   onPressed: () {
-                    if (_formKey.currentState.validate()) {
+                    if (!_formKey.currentState.validate()) {
                       return;
                     } else {
                       _formKey.currentState.save();
                       context.read<UserState>().addUser(
-                            User(name: name, email: email, id: Uuid().v4()),
+                            User(
+                              name: name,
+                              email: email,
+                              id: Uuid().v4(),
+                            ),
                           );
+                      Navigator.of(context).pop();
                     }
                   },
                   child: const Text('Save'),
@@ -119,21 +125,34 @@ class _MyDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = Provider.of<UserState>(context);
 
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(color: Colors.red),
-            child: Text(state.currentUser?.email ?? 'no-user'),
-          ),
-          if (state.users != null)
-            for (var user in state.users)
-              ListTile(
-                title: Text(user.name),
-                subtitle: Text(user.email),
-              )
-        ],
+    return AnnotatedRegion(
+      value: SystemUiOverlayStyle.dark,
+      child: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Theme.of(context).accentColor),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    state.currentUser?.email ?? 'no-user',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ],
+              ),
+            ),
+            if (state.users != null)
+              for (var user in state.users)
+                ListTile(
+                  title: Text(user.name),
+                  subtitle: Text(user.email),
+                  onTap: () => context.read<UserState>().currentUser = user,
+                )
+          ],
+        ),
       ),
     );
   }
