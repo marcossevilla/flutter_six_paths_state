@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter_cubit/flutter_cubit.dart';
-
+import 'cubits/accounts_cubit.dart';
 import '../shared/models/user.dart';
 
 class CubitApp extends StatelessWidget {
@@ -11,8 +11,8 @@ class CubitApp extends StatelessWidget {
     return MaterialApp(
       title: 'Cubit App',
       theme: ThemeData.dark(),
-      home: MultiCubitProvider(
-        providers: [],
+      home: BlocProvider(
+        create: (context) => AccountsCubit(),
         child: _Home(),
       ),
     );
@@ -30,7 +30,18 @@ class _Home extends StatelessWidget {
       key: _scaffoldKey,
       appBar: AppBar(title: const Text('Cubit')),
       drawer: _MyDrawer(),
-      body: Text('no-user'),
+      body: BlocConsumer<AccountsCubit, AccountState>(
+        listener: (context, state) => print(state.toString()),
+        builder: (context, state) {
+          if (state is AccountsInitial) {
+            return Center(child: Text('no-user'));
+          } else if (state is AccountsLoaded) {
+            return Center(child: Text(state.current.email));
+          } else {
+            return Center(child: Text('error'));
+          }
+        },
+      ),
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('New user'),
         onPressed: () {
@@ -92,7 +103,8 @@ class __UserCardState extends State<_UserCard> {
                     } else {
                       _formKey.currentState.save();
 
-                      User(name: _name, email: _email);
+                      final accountCubit = context.bloc<AccountsCubit>();
+                      accountCubit.addUser(User(name: _name, email: _email));
 
                       Navigator.of(context).pop();
                     }
@@ -116,30 +128,45 @@ class _MyDrawer extends StatelessWidget {
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: Theme.of(context).accentColor),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'no-user',
-                    style: TextStyle(color: Colors.black),
+        child: BlocConsumer<AccountsCubit, AccountState>(
+          listener: (context, state) => print(state.toString()),
+          builder: (context, state) {
+            return ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).accentColor,
                   ),
-                ],
-              ),
-            ),
-
-            // for (var user in )
-            //   ListTile(
-            //     title: Text(user.name),
-            //     subtitle: Text(user.email),
-            //     onTap: () => user = user,
-            //   )
-          ],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (state is AccountsInitial)
+                        Text(
+                          'no-user',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      if (state is AccountsLoaded)
+                        Text(
+                          state.current.email,
+                          style: TextStyle(color: Colors.black),
+                        ),
+                    ],
+                  ),
+                ),
+                if (state is AccountsLoaded)
+                  for (var user in state.accounts)
+                    ListTile(
+                      title: Text(user.name),
+                      subtitle: Text(user.email),
+                      onTap: () {
+                        context.bloc<AccountsCubit>().setCurrent(user);
+                      },
+                    ),
+              ],
+            );
+          },
         ),
       ),
     );
