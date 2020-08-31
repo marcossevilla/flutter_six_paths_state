@@ -1,7 +1,16 @@
-class User {
-  String id;
-  String name;
-  String email;
+import 'package:uuid/uuid.dart';
+import 'package:equatable/equatable.dart';
 
-  User({this.id, this.name, this.email});
+class User extends Equatable {
+  final String id;
+  final String name;
+  final String email;
+
+  User({
+    this.name,
+    this.email,
+  }) : this.id = Uuid().v4();
+
+  @override
+  List<Object> get props => [id, name, email];
 }

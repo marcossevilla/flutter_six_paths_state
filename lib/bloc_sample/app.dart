@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:provider/provider.dart';
+import 'package:flutter_cubit/flutter_cubit.dart';
 
 import '../shared/models/user.dart';
-import 'providers/user_provider.dart';
 
-class ProviderApp extends StatelessWidget {
-  const ProviderApp({Key key}) : super(key: key);
-
+class CubitApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => UserProvider(),
-      child: MaterialApp(
-        title: 'Provider',
-        theme: ThemeData.dark(),
-        home: _Home(),
+    return MaterialApp(
+      title: 'Cubit App',
+      theme: ThemeData.dark(),
+      home: MultiCubitProvider(
+        providers: [],
+        child: _Home(),
       ),
     );
   }
@@ -29,15 +26,11 @@ class _Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = context.select(
-      (UserProvider provider) => provider.currentUser,
-    );
-
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(title: const Text('Provider')),
+      appBar: AppBar(title: const Text('Cubit')),
       drawer: _MyDrawer(),
-      body: Center(child: Text(currentUser?.email ?? 'no-user')),
+      body: Text('no-user'),
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('New user'),
         onPressed: () {
@@ -60,8 +53,8 @@ class _UserCard extends StatefulWidget {
 class __UserCardState extends State<_UserCard> {
   final _formKey = GlobalKey<FormState>();
 
-  String name;
-  String email;
+  String _name;
+  String _email;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +75,7 @@ class __UserCardState extends State<_UserCard> {
                     labelText: 'Name',
                   ),
                   validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => name = newValue),
+                  onSaved: (newValue) => setState(() => _name = newValue),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -90,7 +83,7 @@ class __UserCardState extends State<_UserCard> {
                     labelText: 'Email',
                   ),
                   validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => email = newValue),
+                  onSaved: (newValue) => setState(() => _email = newValue),
                 ),
                 FlatButton(
                   onPressed: () {
@@ -98,9 +91,9 @@ class __UserCardState extends State<_UserCard> {
                       return;
                     } else {
                       _formKey.currentState.save();
-                      context.read<UserProvider>().addUser(
-                            User(name: name, email: email),
-                          );
+
+                      User(name: _name, email: _email);
+
                       Navigator.of(context).pop();
                     }
                   },
@@ -120,8 +113,6 @@ class _MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<UserProvider>(context);
-
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Drawer(
@@ -135,19 +126,19 @@ class _MyDrawer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    provider.currentUser?.email ?? 'no-user',
+                    'no-user',
                     style: TextStyle(color: Colors.black),
                   ),
                 ],
               ),
             ),
-            if (provider.users != null)
-              for (var user in provider.users)
-                ListTile(
-                  title: Text(user.name),
-                  subtitle: Text(user.email),
-                  onTap: () => context.read<UserProvider>().currentUser = user,
-                )
+
+            // for (var user in )
+            //   ListTile(
+            //     title: Text(user.name),
+            //     subtitle: Text(user.email),
+            //     onTap: () => user = user,
+            //   )
           ],
         ),
       ),

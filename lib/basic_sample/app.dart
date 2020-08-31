@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:uuid/uuid.dart';
 
 import '../shared/models/user.dart';
@@ -82,8 +83,7 @@ class __HomeState extends State<_Home> {
   }
 
   void addUser(String name, String email) {
-    final user = User(name: name, email: email, id: Uuid().v4());
-
+    final user = User(name: name, email: email);
     users.add(user);
     updateUser(user);
   }
