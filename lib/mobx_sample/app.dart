@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
+import 'stores/user_store.dart';
 import '../shared/models/user.dart';
-import 'cubits/accounts_cubit.dart';
 
-class CubitApp extends StatelessWidget {
+class MobxApp extends StatelessWidget {
+  const MobxApp({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Cubit App',
-      theme: ThemeData.dark(),
-      home: BlocProvider(
-        create: (context) => AccountsCubit(),
-        child: _Home(),
+    return Provider(
+      create: (context) => UserStore(),
+      child: MaterialApp(
+        title: 'Mobx',
+        theme: ThemeData.dark(),
+        home: _Home(),
       ),
     );
   }
@@ -27,21 +30,16 @@ class _Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final store = Provider.of<UserStore>(context);
+
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(title: const Text('Cubit')),
+      appBar: AppBar(title: const Text('MobX')),
       drawer: _MyDrawer(),
-      body: BlocConsumer<AccountsCubit, AccountState>(
-        listener: (context, state) => debugPrint(state.toString()),
-        builder: (context, state) {
-          if (state is AccountsInitial) {
-            return Center(child: Text('no-user'));
-          } else if (state is AccountsLoaded) {
-            return Center(child: Text(state.current.email));
-          } else {
-            return Center(child: Text('error'));
-          }
-        },
+      body: Center(
+        child: Observer(
+          builder: (_) => Text(store.current?.email ?? 'no-user'),
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('New user'),
@@ -65,8 +63,8 @@ class _UserCard extends StatefulWidget {
 class __UserCardState extends State<_UserCard> {
   final _formKey = GlobalKey<FormState>();
 
-  String _name;
-  String _email;
+  String name;
+  String email;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +85,7 @@ class __UserCardState extends State<_UserCard> {
                     labelText: 'Name',
                   ),
                   validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => _name = newValue),
+                  onSaved: (newValue) => setState(() => name = newValue),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -95,7 +93,7 @@ class __UserCardState extends State<_UserCard> {
                     labelText: 'Email',
                   ),
                   validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => _email = newValue),
+                  onSaved: (newValue) => setState(() => email = newValue),
                 ),
                 FlatButton(
                   onPressed: () {
@@ -104,8 +102,9 @@ class __UserCardState extends State<_UserCard> {
                     } else {
                       _formKey.currentState.save();
 
-                      final accountCubit = context.bloc<AccountsCubit>();
-                      accountCubit.addUser(User(name: _name, email: _email));
+                      context.read<UserStore>().addUser(
+                            User(name: name, email: email),
+                          );
 
                       Navigator.of(context).pop();
                     }
@@ -126,48 +125,37 @@ class _MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final store = Provider.of<UserStore>(context);
+
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Drawer(
-        child: BlocConsumer<AccountsCubit, AccountState>(
-          listener: (context, state) => debugPrint(state.toString()),
-          builder: (context, state) {
-            return ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).accentColor,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (state is AccountsInitial)
-                        Text(
-                          'no-user',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      if (state is AccountsLoaded)
-                        Text(
-                          state.current.email,
-                          style: TextStyle(color: Colors.black),
-                        ),
-                    ],
-                  ),
-                ),
-                if (state is AccountsLoaded)
-                  for (var user in state.accounts)
-                    ListTile(
-                      title: Text(user.name),
-                      subtitle: Text(user.email),
-                      onTap: () {
-                        context.bloc<AccountsCubit>().setCurrent(user);
-                      },
+        child: Observer(
+          builder: (_) => ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(color: Theme.of(context).accentColor),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      store.current?.email ?? 'no-user',
+                      style: TextStyle(color: Colors.black),
                     ),
-              ],
-            );
-          },
+                  ],
+                ),
+              ),
+              if (store.accounts.isNotEmpty)
+                for (var account in store.accounts)
+                  ListTile(
+                    title: Text(account.name),
+                    subtitle: Text((account.email)),
+                    onTap: () => store.current = account,
+                  )
+            ],
+          ),
         ),
       ),
     );
