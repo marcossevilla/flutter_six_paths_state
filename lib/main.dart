@@ -1,29 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'getx_sample/app.dart';
-// import 'mobx_sample/app.dart';
-// import 'bloc_sample/app.dart';
-// import 'basic_sample/app.dart';
-// import 'provider_sample/app.dart';
+import 'apps.dart';
 
-// * main for most apps
-// void main() => runApp(GetXApp());
-
-// * main and config for getX
-void main() => runApp(GetXApp());
-
-// * main and config for redux
-// import 'package:redux/redux.dart';
-
-// import 'redux_sample/app.dart';
-// import 'redux_sample/redux/app_state.dart';
-// import 'redux_sample/redux/reducers.dart';
-
-// void main() {
-//   final store = Store<AppState>(
-//     appReducers,
-//     initialState: AppState.initial(),
-//   );
-
-//   runApp(ReduxApp(store: store));
-// }
+void main() => runApp(SixPathsStateApp());

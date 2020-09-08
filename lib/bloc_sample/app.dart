@@ -10,7 +10,7 @@ class CubitApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Cubit App',
+      title: 'Cubit',
       theme: ThemeData.dark(),
       home: BlocProvider(
         create: (context) => AccountsCubit(),

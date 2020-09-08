@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_six_paths_state/getx_sample/controllers/user_controller.dart';
 
 import 'package:get/get.dart';
 
 import '../shared/models/user.dart';
+import 'controllers/user_controller.dart';
 
 class GetXApp extends StatelessWidget {
   GetXApp({Key key}) : super(key: key);
