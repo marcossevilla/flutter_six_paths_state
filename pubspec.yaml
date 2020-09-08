@@ -33,6 +33,9 @@ dependencies:
   # redux
   redux: ^4.0.0+3
   flutter_redux: ^0.6.0
+  
+  # getX
+  get: ^3.8.0
 
 dev_dependencies:
   flutter_test:
