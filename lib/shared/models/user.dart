@@ -7,8 +7,8 @@ class User extends Equatable {
   final String email;
 
   User({
-    this.name,
-    this.email,
+    required this.name,
+    required this.email,
   }) : this.id = Uuid().v4();
 
   @override

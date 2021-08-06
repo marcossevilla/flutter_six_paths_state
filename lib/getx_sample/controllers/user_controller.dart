@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../../shared/models/user.dart';
 
 class UserController extends GetxController {
-  var current = User().obs;
+  var current = User(email: 'no-email', name: 'no-user').obs;
   var accounts = <User>[].obs;
 
   void setCurrent(User value) => current.value = value;

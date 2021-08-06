@@ -12,13 +12,13 @@ mixin _$UserStore on _UserBase, Store {
   final _$currentAtom = Atom(name: '_UserBase.current');
 
   @override
-  User get current {
+  User? get current {
     _$currentAtom.reportRead();
     return super.current;
   }
 
   @override
-  set current(User value) {
+  set current(User? value) {
     _$currentAtom.reportWrite(value, super.current, () {
       super.current = value;
     });

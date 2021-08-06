@@ -8,7 +8,7 @@ import 'stores/user_store.dart';
 import '../shared/models/user.dart';
 
 class MobxApp extends StatelessWidget {
-  const MobxApp({Key key}) : super(key: key);
+  const MobxApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class MobxApp extends StatelessWidget {
 }
 
 class _Home extends StatelessWidget {
-  _Home({Key key}) : super(key: key);
+  _Home({Key? key}) : super(key: key);
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -44,8 +44,8 @@ class _Home extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('New user'),
         onPressed: () {
-          _scaffoldKey.currentState.showBottomSheet<Widget>(
-            (context) => _UserCard(),
+          _scaffoldKey.currentState!.showBottomSheet<Widget>(
+            (_) => _UserCard(),
           );
         },
       ),
@@ -54,7 +54,7 @@ class _Home extends StatelessWidget {
 }
 
 class _UserCard extends StatefulWidget {
-  const _UserCard({Key key}) : super(key: key);
+  const _UserCard({Key? key}) : super(key: key);
 
   @override
   __UserCardState createState() => __UserCardState();
@@ -63,8 +63,8 @@ class _UserCard extends StatefulWidget {
 class __UserCardState extends State<_UserCard> {
   final _formKey = GlobalKey<FormState>();
 
-  String name;
-  String email;
+  String name = '';
+  String email = '';
 
   @override
   Widget build(BuildContext context) {
@@ -84,30 +84,30 @@ class __UserCardState extends State<_UserCard> {
                     border: InputBorder.none,
                     labelText: 'Name',
                   ),
-                  validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => name = newValue),
+                  validator: (value) =>
+                      value!.trim().isEmpty ? 'Fill up' : null,
+                  onSaved: (newValue) => setState(() => name = newValue!),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     labelText: 'Email',
                   ),
-                  validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => email = newValue),
+                  validator: (value) =>
+                      value!.trim().isEmpty ? 'Fill up' : null,
+                  onSaved: (newValue) => setState(() => email = newValue!),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
-                    if (!_formKey.currentState.validate()) {
-                      return;
-                    } else {
-                      _formKey.currentState.save();
+                    if (!_formKey.currentState!.validate()) return;
 
-                      context.read<UserStore>().addUser(
-                            User(name: name, email: email),
-                          );
+                    _formKey.currentState!.save();
 
-                      Navigator.of(context).pop();
-                    }
+                    context.read<UserStore>().addUser(
+                          User(name: name, email: email),
+                        );
+
+                    Navigator.of(context).pop();
                   },
                   child: const Text('Save'),
                 ),
@@ -121,7 +121,7 @@ class __UserCardState extends State<_UserCard> {
 }
 
 class _MyDrawer extends StatelessWidget {
-  const _MyDrawer({Key key}) : super(key: key);
+  const _MyDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +141,7 @@ class _MyDrawer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      store.current?.email ?? 'no-user',
+                      store.current?.email ?? 'no-email',
                       style: TextStyle(color: Colors.black),
                     ),
                   ],

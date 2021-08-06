@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../shared/models/user.dart';
-import 'cubits/accounts_cubit.dart';
+import 'cubit/accounts_cubit.dart';
 
 class CubitApp extends StatelessWidget {
   @override
@@ -21,7 +21,7 @@ class CubitApp extends StatelessWidget {
 }
 
 class _Home extends StatelessWidget {
-  _Home({Key key}) : super(key: key);
+  _Home({Key? key}) : super(key: key);
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -46,7 +46,7 @@ class _Home extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('New user'),
         onPressed: () {
-          _scaffoldKey.currentState.showBottomSheet<Widget>(
+          _scaffoldKey.currentState!.showBottomSheet<Widget>(
             (context) => _UserCard(),
           );
         },
@@ -56,7 +56,7 @@ class _Home extends StatelessWidget {
 }
 
 class _UserCard extends StatefulWidget {
-  const _UserCard({Key key}) : super(key: key);
+  const _UserCard({Key? key}) : super(key: key);
 
   @override
   __UserCardState createState() => __UserCardState();
@@ -65,8 +65,8 @@ class _UserCard extends StatefulWidget {
 class __UserCardState extends State<_UserCard> {
   final _formKey = GlobalKey<FormState>();
 
-  String _name;
-  String _email;
+  String _name = '';
+  String _email = '';
 
   @override
   Widget build(BuildContext context) {
@@ -86,29 +86,28 @@ class __UserCardState extends State<_UserCard> {
                     border: InputBorder.none,
                     labelText: 'Name',
                   ),
-                  validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => _name = newValue),
+                  validator: (value) =>
+                      value!.trim().isEmpty ? 'Fill up' : null,
+                  onSaved: (newValue) => setState(() => _name = newValue!),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     labelText: 'Email',
                   ),
-                  validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => _email = newValue),
+                  validator: (value) =>
+                      value!.trim().isEmpty ? 'Fill up' : null,
+                  onSaved: (newValue) => setState(() => _email = newValue!),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
-                    if (!_formKey.currentState.validate()) {
-                      return;
-                    } else {
-                      _formKey.currentState.save();
+                    if (!_formKey.currentState!.validate()) return;
+                    _formKey.currentState!.save();
 
-                      final accountCubit = context.bloc<AccountsCubit>();
-                      accountCubit.addUser(User(name: _name, email: _email));
+                    final accountCubit = context.read<AccountsCubit>();
+                    accountCubit.addUser(User(name: _name, email: _email));
 
-                      Navigator.of(context).pop();
-                    }
+                    Navigator.of(context).pop();
                   },
                   child: const Text('Save'),
                 ),
@@ -122,7 +121,7 @@ class __UserCardState extends State<_UserCard> {
 }
 
 class _MyDrawer extends StatelessWidget {
-  const _MyDrawer({Key key}) : super(key: key);
+  const _MyDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +161,7 @@ class _MyDrawer extends StatelessWidget {
                       title: Text(user.name),
                       subtitle: Text(user.email),
                       onTap: () {
-                        context.bloc<AccountsCubit>().setCurrent(user);
+                        context.read<AccountsCubit>().setCurrent(user);
                       },
                     ),
               ],

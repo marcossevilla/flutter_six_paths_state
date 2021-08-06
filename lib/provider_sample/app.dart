@@ -7,7 +7,7 @@ import '../shared/models/user.dart';
 import 'providers/user_provider.dart';
 
 class ProviderApp extends StatelessWidget {
-  const ProviderApp({Key key}) : super(key: key);
+  const ProviderApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class ProviderApp extends StatelessWidget {
 }
 
 class _Home extends StatelessWidget {
-  _Home({Key key}) : super(key: key);
+  _Home({Key? key}) : super(key: key);
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -41,7 +41,7 @@ class _Home extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('New user'),
         onPressed: () {
-          _scaffoldKey.currentState.showBottomSheet<Widget>(
+          _scaffoldKey.currentState!.showBottomSheet<Widget>(
             (context) => _UserCard(),
           );
         },
@@ -51,7 +51,7 @@ class _Home extends StatelessWidget {
 }
 
 class _UserCard extends StatefulWidget {
-  const _UserCard({Key key}) : super(key: key);
+  const _UserCard({Key? key}) : super(key: key);
 
   @override
   __UserCardState createState() => __UserCardState();
@@ -60,8 +60,8 @@ class _UserCard extends StatefulWidget {
 class __UserCardState extends State<_UserCard> {
   final _formKey = GlobalKey<FormState>();
 
-  String name;
-  String email;
+  String name = '';
+  String email = '';
 
   @override
   Widget build(BuildContext context) {
@@ -81,28 +81,28 @@ class __UserCardState extends State<_UserCard> {
                     border: InputBorder.none,
                     labelText: 'Name',
                   ),
-                  validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => name = newValue),
+                  validator: (value) =>
+                      value!.trim().isEmpty ? 'Fill up' : null,
+                  onSaved: (newValue) => setState(() => name = newValue!),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     labelText: 'Email',
                   ),
-                  validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => email = newValue),
+                  validator: (value) =>
+                      value!.trim().isEmpty ? 'Fill up' : null,
+                  onSaved: (newValue) => setState(() => email = newValue!),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
-                    if (!_formKey.currentState.validate()) {
-                      return;
-                    } else {
-                      _formKey.currentState.save();
-                      context.read<UserProvider>().addUser(
-                            User(name: name, email: email),
-                          );
-                      Navigator.of(context).pop();
-                    }
+                    if (!_formKey.currentState!.validate()) return;
+
+                    _formKey.currentState!.save();
+                    context.read<UserProvider>().addUser(
+                          User(name: name, email: email),
+                        );
+                    Navigator.of(context).pop();
                   },
                   child: const Text('Save'),
                 ),
@@ -116,7 +116,7 @@ class __UserCardState extends State<_UserCard> {
 }
 
 class _MyDrawer extends StatelessWidget {
-  const _MyDrawer({Key key}) : super(key: key);
+  const _MyDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +141,7 @@ class _MyDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            if (provider.users != null)
+            if (provider.users.isNotEmpty)
               for (var user in provider.users)
                 ListTile(
                   title: Text(user.name),

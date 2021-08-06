@@ -15,14 +15,14 @@ class BasicApp extends StatelessWidget {
 }
 
 class _Home extends StatefulWidget {
-  const _Home({Key key}) : super(key: key);
+  const _Home({Key? key}) : super(key: key);
 
   @override
   __HomeState createState() => __HomeState();
 }
 
 class __HomeState extends State<_Home> {
-  User currentUser;
+  User? currentUser;
   List<User> users = [];
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -39,7 +39,7 @@ class __HomeState extends State<_Home> {
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('New user'),
         onPressed: () {
-          _scaffoldKey.currentState.showBottomSheet<Widget>(
+          _scaffoldKey.currentState!.showBottomSheet<Widget>(
             (context) => _UserCard(addUser: addUser),
           );
         },
@@ -67,7 +67,7 @@ class __HomeState extends State<_Home> {
                 ],
               ),
             ),
-            if (users != null)
+            if (users.isNotEmpty)
               for (var user in users)
                 ListTile(
                   title: Text(user.name),
@@ -90,7 +90,10 @@ class __HomeState extends State<_Home> {
 }
 
 class _UserCard extends StatefulWidget {
-  const _UserCard({Key key, this.addUser}) : super(key: key);
+  const _UserCard({
+    Key? key,
+    required this.addUser,
+  }) : super(key: key);
 
   final Function(String, String) addUser;
 
@@ -101,8 +104,8 @@ class _UserCard extends StatefulWidget {
 class __UserCardState extends State<_UserCard> {
   final _formKey = GlobalKey<FormState>();
 
-  String _name;
-  String _email;
+  String _name = '';
+  String _email = '';
 
   @override
   Widget build(BuildContext context) {
@@ -122,26 +125,27 @@ class __UserCardState extends State<_UserCard> {
                     border: InputBorder.none,
                     labelText: 'Name',
                   ),
-                  validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => _name = newValue),
+                  validator: (value) =>
+                      value!.trim().isEmpty ? 'Fill up' : null,
+                  onSaved: (newValue) => setState(() => _name = newValue!),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     labelText: 'Email',
                   ),
-                  validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => _email = newValue),
+                  validator: (value) =>
+                      value!.trim().isEmpty ? 'Fill up' : null,
+                  onSaved: (newValue) => setState(() => _email = newValue!),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
-                    if (!_formKey.currentState.validate()) {
-                      return;
-                    } else {
-                      _formKey.currentState.save();
-                      widget.addUser(_name, _email);
-                      Navigator.of(context).pop();
-                    }
+                    if (!_formKey.currentState!.validate()) return;
+                    _formKey.currentState!.save();
+
+                    widget.addUser(_name, _email);
+
+                    Navigator.of(context).pop();
                   },
                   child: const Text('Save'),
                 ),

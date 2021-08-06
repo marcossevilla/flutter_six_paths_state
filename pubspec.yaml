@@ -1,51 +1,33 @@
 name: flutter_six_paths_state
-description: A new Flutter project.
-
-publish_to: 'none'
+description: A Flutter project to compare the most used ways to manage state.
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.9.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-
-  cupertino_icons: ^0.1.3
-
-  # shared
-  meta: ^1.1.6
-  uuid: ^2.2.0
-  equatable: ^1.0.0
-
-  # provider & mobx
-  provider: ^4.3.2+1
-
-  # bloc
-  bloc: ^6.0.2
-  flutter_bloc: ^6.0.3
-
-  # mobx
-  mobx: ^1.2.1+2
-  flutter_mobx: ^1.1.0+2
-
-  # redux
-  redux: ^4.0.0+3
-  flutter_redux: ^0.6.0
-  
-  # getX
-  get: ^3.8.0
+  bloc: ^7.0.0
+  cupertino_icons: ^1.0.3
+  equatable: ^2.0.3
+  flutter_bloc: ^7.1.0
+  flutter_mobx: ^2.0.1
+  flutter_redux: ^0.8.2
+  get: ^4.3.4
+  meta: ^1.3.0
+  mobx: ^2.0.3
+  provider: ^5.0.0
+  redux: ^5.0.0
+  uuid: ^3.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  build_runner: ^1.10.1
-
-  # mobx
-  mobx_codegen: ^1.1.0+1
+  build_runner: ^2.1.0
+  mobx_codegen: ^2.0.2
 
 flutter:
   uses-material-design: true
-

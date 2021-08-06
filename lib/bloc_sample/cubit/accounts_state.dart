@@ -5,12 +5,7 @@ abstract class AccountState {
   const AccountState();
 }
 
-class AccountsInitial extends AccountState {
-  final User current;
-  final List<User> accounts;
-
-  const AccountsInitial({this.accounts = const [], this.current});
-}
+class AccountsInitial extends AccountState {}
 
 class AccountsLoaded extends AccountState {
   final User current;

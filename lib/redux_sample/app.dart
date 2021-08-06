@@ -9,9 +9,9 @@ import 'redux/app_state.dart';
 import '../shared/models/user.dart';
 
 class ReduxApp extends StatelessWidget {
-  const ReduxApp({Key key, @required this.store}) : super(key: key);
+  const ReduxApp({Key? key, required this.store}) : super(key: key);
 
-  final Store store;
+  final Store<AppState> store;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class ReduxApp extends StatelessWidget {
 }
 
 class _Home extends StatefulWidget {
-  const _Home({Key key}) : super(key: key);
+  const _Home({Key? key}) : super(key: key);
 
   @override
   __HomeState createState() => __HomeState();
@@ -49,7 +49,7 @@ class __HomeState extends State<_Home> {
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('New user'),
         onPressed: () {
-          _scaffoldKey.currentState.showBottomSheet<Widget>(
+          _scaffoldKey.currentState!.showBottomSheet<Widget>(
             (context) => _UserCard(),
           );
         },
@@ -59,7 +59,7 @@ class __HomeState extends State<_Home> {
 }
 
 class _UserCard extends StatefulWidget {
-  const _UserCard({Key key}) : super(key: key);
+  const _UserCard({Key? key}) : super(key: key);
 
   @override
   __UserCardState createState() => __UserCardState();
@@ -68,8 +68,8 @@ class _UserCard extends StatefulWidget {
 class __UserCardState extends State<_UserCard> {
   final _formKey = GlobalKey<FormState>();
 
-  String _name;
-  String _email;
+  String _name = '';
+  String _email = '';
 
   @override
   Widget build(BuildContext context) {
@@ -89,33 +89,32 @@ class __UserCardState extends State<_UserCard> {
                     border: InputBorder.none,
                     labelText: 'Name',
                   ),
-                  validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => _name = newValue),
+                  validator: (value) =>
+                      value!.trim().isEmpty ? 'Fill up' : null,
+                  onSaved: (newValue) => setState(() => _name = newValue!),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     labelText: 'Email',
                   ),
-                  validator: (value) => value.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => _email = newValue),
+                  validator: (value) =>
+                      value!.trim().isEmpty ? 'Fill up' : null,
+                  onSaved: (newValue) => setState(() => _email = newValue!),
                 ),
                 StoreConnector<AppState, OnAccountAdded>(
                   converter: (store) {
                     return (item) => store.dispatch(AddAccountAction(item));
                   },
                   builder: (context, addUser) {
-                    return FlatButton(
+                    return TextButton(
                       onPressed: () {
-                        if (!_formKey.currentState.validate()) {
-                          return;
-                        } else {
-                          _formKey.currentState.save();
+                        if (!_formKey.currentState!.validate()) return;
+                        _formKey.currentState!.save();
 
-                          addUser(User(email: _email, name: _name));
+                        addUser(User(email: _email, name: _name));
 
-                          Navigator.of(context).pop();
-                        }
+                        Navigator.of(context).pop();
                       },
                       child: const Text('Save'),
                     );
@@ -131,7 +130,7 @@ class __UserCardState extends State<_UserCard> {
 }
 
 class _MyDrawer extends StatelessWidget {
-  const _MyDrawer({Key key}) : super(key: key);
+  const _MyDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +161,7 @@ class _MyDrawer extends StatelessWidget {
 }
 
 class _AccountTile extends StatelessWidget {
-  const _AccountTile({Key key, @required this.user}) : super(key: key);
+  const _AccountTile({Key? key, required this.user}) : super(key: key);
 
   final User user;
 
@@ -184,7 +183,7 @@ class _AccountTile extends StatelessWidget {
 }
 
 class _DrawerHeader extends StatelessWidget {
-  const _DrawerHeader({Key key}) : super(key: key);
+  const _DrawerHeader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

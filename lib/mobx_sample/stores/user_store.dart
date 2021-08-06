@@ -8,7 +8,7 @@ class UserStore extends _UserBase with _$UserStore {}
 
 abstract class _UserBase with Store {
   @observable
-  User current;
+  User? current;
 
   @observable
   ObservableList<User> accounts = ObservableList<User>();
