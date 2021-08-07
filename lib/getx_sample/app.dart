@@ -26,20 +26,28 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UserController _controller = Get.find();
-
+    final userController = Get.find<UserController>();
     return Scaffold(
       appBar: AppBar(title: const Text('GetX')),
       drawer: UserDrawer(),
       body: Center(
-        child: Obx(() => Text(_controller.current.value.email)),
+        child: Obx(() => Text(userController.current.value.email)),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: const Text('New user'),
-        onPressed: () {
-          Scaffold.of(context).showBottomSheet<Widget>((_) => UserCard());
-        },
-      ),
+      floatingActionButton: const ProfileAddAccountButton(),
+    );
+  }
+}
+
+class ProfileAddAccountButton extends StatelessWidget {
+  const ProfileAddAccountButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton.extended(
+      label: const Text('New user'),
+      onPressed: () {
+        Scaffold.of(context).showBottomSheet<Widget>((_) => UserCard());
+      },
     );
   }
 }
@@ -53,13 +61,13 @@ class UserCard extends StatefulWidget {
 
 class _UserCardState extends State<UserCard> {
   final _formKey = GlobalKey<FormState>();
-  final _controller = Get.find<UserController>();
 
   String name = '';
   String email = '';
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<UserController>();
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: 32,
@@ -99,7 +107,7 @@ class _UserCardState extends State<UserCard> {
                     if (!_formKey.currentState!.validate()) return;
 
                     _formKey.currentState!.save();
-                    _controller.addUser(User(name: name, email: email));
+                    controller.addUser(User(name: name, email: email));
 
                     Navigator.of(context).pop();
                     Get.snackbar('Saved!', 'User saved successfully');
@@ -120,7 +128,7 @@ class UserDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UserController _controller = Get.find();
+    final controller = Get.find<UserController>();
 
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
@@ -138,18 +146,18 @@ class UserDrawer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _controller.current.value.email,
+                      controller.current.value.email,
                       style: TextStyle(color: Colors.black),
                     ),
                   ],
                 ),
               ),
-              if (_controller.accounts.isNotEmpty)
-                for (var user in _controller.accounts)
+              if (controller.accounts.isNotEmpty)
+                for (var user in controller.accounts)
                   ListTile(
                     title: Text(user.name),
                     subtitle: Text(user.email),
-                    onTap: () => _controller.setCurrent(user),
+                    onTap: () => controller.setCurrent(user),
                   )
             ],
           ),

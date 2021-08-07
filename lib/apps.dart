@@ -12,10 +12,12 @@ import 'redux_sample/app.dart';
 import 'redux_sample/app_redux/app_redux.dart';
 
 class SixPathsStateApp extends StatelessWidget {
-  final store = Store<AppState>(
-    appReducers,
-    initialState: AppState.initial(),
-  );
+  const SixPathsStateApp({
+    Key? key,
+    required this.store,
+  }) : super(key: key);
+
+  final Store<AppState> store;
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +33,12 @@ class SixPathsStateApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.dark(),
       home: Scaffold(
-        appBar: AppBar(title: Text(this.toString())),
+        appBar: AppBar(title: Text('$this')),
         body: ListView.builder(
           itemCount: apps.length,
           itemBuilder: (context, index) {
             return ListTile(
-              title: Text(apps[index].toString()),
+              title: Text('${apps[index]}'),
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => apps[index]),
               ),

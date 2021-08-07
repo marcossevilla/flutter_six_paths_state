@@ -14,11 +14,7 @@ class MobxApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider(
       create: (_) => UserStore(),
-      child: MaterialApp(
-        title: 'Mobx',
-        theme: ThemeData.dark(),
-        home: HomeView(),
-      ),
+      child: const HomeView(),
     );
   }
 }
@@ -29,7 +25,6 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final store = context.watch<UserStore>();
-
     return Scaffold(
       appBar: AppBar(title: const Text('MobX')),
       drawer: UserDrawer(),
@@ -38,12 +33,21 @@ class HomeView extends StatelessWidget {
           builder: (_) => Text(store.current?.email ?? 'no-user'),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: const Text('New user'),
-        onPressed: () {
-          Scaffold.of(context).showBottomSheet<Widget>((_) => UserCard());
-        },
-      ),
+      floatingActionButton: const ProfileAddAccountButton(),
+    );
+  }
+}
+
+class ProfileAddAccountButton extends StatelessWidget {
+  const ProfileAddAccountButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton.extended(
+      label: const Text('New user'),
+      onPressed: () {
+        Scaffold.of(context).showBottomSheet<Widget>((_) => UserCard());
+      },
     );
   }
 }

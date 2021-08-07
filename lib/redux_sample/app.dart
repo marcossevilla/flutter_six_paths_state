@@ -8,63 +8,64 @@ import 'app_redux/app_redux.dart';
 export 'app_redux/app_redux.dart' show appReducers;
 
 class ReduxApp extends StatelessWidget {
-  const ReduxApp({Key? key, required this.store}) : super(key: key);
+  const ReduxApp({
+    Key? key,
+    required Store<AppState> store,
+  })  : _store = store,
+        super(key: key);
 
-  final Store<AppState> store;
+  final Store<AppState> _store;
 
   @override
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
-      store: store,
-      child: MaterialApp(
-        title: 'Redux',
-        theme: ThemeData.dark(),
-        home: _Home(),
-      ),
+      store: _store,
+      child: const HomeView(),
     );
   }
 }
 
-class _Home extends StatefulWidget {
-  const _Home({Key? key}) : super(key: key);
-
-  @override
-  __HomeState createState() => __HomeState();
-}
-
-class __HomeState extends State<_Home> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+class HomeView extends StatelessWidget {
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(title: Text('Redux')),
+      appBar: AppBar(
+        title: Text('Redux'),
+      ),
       body: StoreConnector<AppState, String>(
         converter: (store) => store.state.current?.email ?? 'no-user',
-        builder: (context, state) => Center(child: Text(state)),
+        builder: (_, state) => Center(child: Text(state)),
       ),
-      drawer: _MyDrawer(),
-      floatingActionButton: FloatingActionButton.extended(
-        label: const Text('New user'),
-        onPressed: () {
-          _scaffoldKey.currentState!.showBottomSheet<Widget>(
-            (context) => _UserCard(),
-          );
-        },
-      ),
+      drawer: UserDrawer(),
+      floatingActionButton: ProfileAddAccountButton(),
     );
   }
 }
 
-class _UserCard extends StatefulWidget {
-  const _UserCard({Key? key}) : super(key: key);
+class ProfileAddAccountButton extends StatelessWidget {
+  const ProfileAddAccountButton({Key? key}) : super(key: key);
 
   @override
-  __UserCardState createState() => __UserCardState();
+  Widget build(BuildContext context) {
+    return FloatingActionButton.extended(
+      label: const Text('New user'),
+      onPressed: () {
+        Scaffold.of(context).showBottomSheet((_) => UserCard());
+      },
+    );
+  }
 }
 
-class __UserCardState extends State<_UserCard> {
+class UserCard extends StatefulWidget {
+  const UserCard({Key? key}) : super(key: key);
+
+  @override
+  _UserCardState createState() => _UserCardState();
+}
+
+class _UserCardState extends State<UserCard> {
   final _formKey = GlobalKey<FormState>();
 
   String _name = '';
@@ -73,9 +74,14 @@ class __UserCardState extends State<_UserCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 12),
+      padding: const EdgeInsets.symmetric(
+        vertical: 32,
+        horizontal: 12,
+      ),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         child: Form(
           key: _formKey,
           child: Padding(
@@ -128,8 +134,8 @@ class __UserCardState extends State<_UserCard> {
   }
 }
 
-class _MyDrawer extends StatelessWidget {
-  const _MyDrawer({Key? key}) : super(key: key);
+class UserDrawer extends StatelessWidget {
+  const UserDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

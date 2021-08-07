@@ -4,44 +4,30 @@ import 'package:six_paths_core/six_paths_core.dart';
 
 class BasicApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'setState',
-      home: _Home(),
-      theme: ThemeData.dark(),
-    );
-  }
+  Widget build(BuildContext context) => const HomeView();
 }
 
-class _Home extends StatefulWidget {
-  const _Home({Key? key}) : super(key: key);
+class HomeView extends StatefulWidget {
+  const HomeView({Key? key}) : super(key: key);
 
   @override
-  __HomeState createState() => __HomeState();
+  _HomeViewState createState() => _HomeViewState();
 }
 
-class __HomeState extends State<_Home> {
+class _HomeViewState extends State<HomeView> {
   User? currentUser;
   List<User> users = [];
-
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(title: Text('setState')),
       body: Center(
         child: Text(currentUser?.email ?? 'no-user'),
       ),
       drawer: _buildDrawer(),
-      floatingActionButton: FloatingActionButton.extended(
-        label: const Text('New user'),
-        onPressed: () {
-          _scaffoldKey.currentState!.showBottomSheet<Widget>(
-            (context) => _UserCard(addUser: addUser),
-          );
-        },
+      floatingActionButton: ProfileAddAccountButton(
+        addUser: addUser,
       ),
     );
   }
@@ -88,8 +74,8 @@ class __HomeState extends State<_Home> {
   void updateUser(User user) => setState(() => currentUser = user);
 }
 
-class _UserCard extends StatefulWidget {
-  const _UserCard({
+class ProfileAddAccountButton extends StatelessWidget {
+  const ProfileAddAccountButton({
     Key? key,
     required this.addUser,
   }) : super(key: key);
@@ -97,10 +83,31 @@ class _UserCard extends StatefulWidget {
   final Function(String, String) addUser;
 
   @override
-  __UserCardState createState() => __UserCardState();
+  Widget build(BuildContext context) {
+    return FloatingActionButton.extended(
+      label: const Text('New user'),
+      onPressed: () {
+        Scaffold.of(context).showBottomSheet(
+          (_) => UserCard(addUser: addUser),
+        );
+      },
+    );
+  }
 }
 
-class __UserCardState extends State<_UserCard> {
+class UserCard extends StatefulWidget {
+  const UserCard({
+    Key? key,
+    required this.addUser,
+  }) : super(key: key);
+
+  final Function(String, String) addUser;
+
+  @override
+  _UserCardState createState() => _UserCardState();
+}
+
+class _UserCardState extends State<UserCard> {
   final _formKey = GlobalKey<FormState>();
 
   String _name = '';

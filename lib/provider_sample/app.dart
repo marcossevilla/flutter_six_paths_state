@@ -12,11 +12,7 @@ class ProviderApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => UserNotifier(),
-      child: MaterialApp(
-        title: 'Provider',
-        theme: ThemeData.dark(),
-        home: HomeView(),
-      ),
+      child: HomeView(),
     );
   }
 }

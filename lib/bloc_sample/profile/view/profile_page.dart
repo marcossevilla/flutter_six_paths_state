@@ -21,24 +21,33 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Bloc')),
-      drawer: ProfileDrawer(),
+      drawer: const ProfileDrawer(),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (_, state) {
           if (state is ProfileInitial) {
-            return Center(child: Text('no-user'));
+            return const Center(child: Text('no-user'));
           } else if (state is ProfileLoaded) {
             return Center(child: Text(state.current.email));
           } else {
-            return Center(child: Text('error'));
+            return const Center(child: Text('error'));
           }
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: const Text('New user'),
-        onPressed: () {
-          Scaffold.of(context).showBottomSheet((_) => ProfileCard());
-        },
-      ),
+      floatingActionButton: ProfileAddAccountButton(),
+    );
+  }
+}
+
+class ProfileAddAccountButton extends StatelessWidget {
+  const ProfileAddAccountButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton.extended(
+      label: const Text('New user'),
+      onPressed: () {
+        Scaffold.of(context).showBottomSheet((_) => ProfileCard());
+      },
     );
   }
 }
