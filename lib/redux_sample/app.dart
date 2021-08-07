@@ -4,9 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'redux/actions.dart';
-import 'redux/app_state.dart';
-import '../shared/models/user.dart';
+import 'app_redux/app_redux.dart';
+export 'app_redux/app_redux.dart' show appReducers;
 
 class ReduxApp extends StatelessWidget {
   const ReduxApp({Key? key, required this.store}) : super(key: key);

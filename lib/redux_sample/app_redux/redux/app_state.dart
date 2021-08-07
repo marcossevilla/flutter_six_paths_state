@@ -1,4 +1,4 @@
-import '../../shared/models/user.dart';
+part of 'app_reducers.dart';
 
 typedef OnAccountAdded = Function(User user);
 

@@ -9,8 +9,7 @@ import 'basic_sample/app.dart';
 import 'provider_sample/app.dart';
 
 import 'redux_sample/app.dart';
-import 'redux_sample/redux/app_state.dart';
-import 'redux_sample/redux/reducers.dart';
+import 'redux_sample/app_redux/app_redux.dart';
 
 class SixPathsStateApp extends StatelessWidget {
   final store = Store<AppState>(

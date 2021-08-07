@@ -1,5 +1,7 @@
-import 'actions.dart';
-import 'app_state.dart';
+import '../../../shared/models/user.dart';
+
+part 'app_actions.dart';
+part 'app_state.dart';
 
 AppState appReducers(AppState state, dynamic action) {
   if (action is AddAccountAction) {
