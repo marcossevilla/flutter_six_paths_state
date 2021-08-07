@@ -22,7 +22,7 @@ class SixPathsStateApp extends StatelessWidget {
     final apps = [
       BasicApp(),
       ProviderApp(),
-      CubitApp(),
+      BlocApp(),
       ReduxApp(store: store),
       MobxApp(),
       GetXApp(),

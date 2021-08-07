@@ -1,0 +1,14 @@
+name: six_paths_core
+description: Core for each one of Flutter's paths of state.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  equatable: ^2.0.3
+  uuid: ^3.0.4
+
+dev_dependencies:
+  test: ^1.17.0

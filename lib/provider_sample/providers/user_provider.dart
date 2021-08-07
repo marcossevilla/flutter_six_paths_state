@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:six_paths_core/six_paths_core.dart';
 
-import '../../shared/models/user.dart';
-
-class UserProvider with ChangeNotifier {
+class UserNotifier with ChangeNotifier {
   User? _currentUser;
   User? get currentUser => _currentUser;
   set currentUser(User? user) {

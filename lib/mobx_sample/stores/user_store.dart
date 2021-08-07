@@ -1,6 +1,5 @@
 import 'package:mobx/mobx.dart';
-
-import '../../shared/models/user.dart';
+import 'package:six_paths_core/six_paths_core.dart';
 
 part 'user_store.g.dart';
 

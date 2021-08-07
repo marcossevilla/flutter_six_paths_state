@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
-
-import '../../shared/models/user.dart';
+import 'package:six_paths_core/six_paths_core.dart';
 
 class UserController extends GetxController {
   var current = User(email: 'no-email', name: 'no-user').obs;

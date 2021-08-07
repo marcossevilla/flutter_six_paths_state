@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:six_paths_core/six_paths_core.dart';
 
 import 'stores/user_store.dart';
-import '../shared/models/user.dart';
 
 class MobxApp extends StatelessWidget {
   const MobxApp({Key? key}) : super(key: key);
@@ -13,29 +13,26 @@ class MobxApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (context) => UserStore(),
+      create: (_) => UserStore(),
       child: MaterialApp(
         title: 'Mobx',
         theme: ThemeData.dark(),
-        home: _Home(),
+        home: HomeView(),
       ),
     );
   }
 }
 
-class _Home extends StatelessWidget {
-  _Home({Key? key}) : super(key: key);
-
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+class HomeView extends StatelessWidget {
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final store = Provider.of<UserStore>(context);
+    final store = context.watch<UserStore>();
 
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(title: const Text('MobX')),
-      drawer: _MyDrawer(),
+      drawer: UserDrawer(),
       body: Center(
         child: Observer(
           builder: (_) => Text(store.current?.email ?? 'no-user'),
@@ -44,23 +41,21 @@ class _Home extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('New user'),
         onPressed: () {
-          _scaffoldKey.currentState!.showBottomSheet<Widget>(
-            (_) => _UserCard(),
-          );
+          Scaffold.of(context).showBottomSheet<Widget>((_) => UserCard());
         },
       ),
     );
   }
 }
 
-class _UserCard extends StatefulWidget {
-  const _UserCard({Key? key}) : super(key: key);
+class UserCard extends StatefulWidget {
+  const UserCard({Key? key}) : super(key: key);
 
   @override
-  __UserCardState createState() => __UserCardState();
+  _UserCardState createState() => _UserCardState();
 }
 
-class __UserCardState extends State<_UserCard> {
+class _UserCardState extends State<UserCard> {
   final _formKey = GlobalKey<FormState>();
 
   String name = '';
@@ -69,9 +64,14 @@ class __UserCardState extends State<_UserCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 12),
+      padding: const EdgeInsets.symmetric(
+        vertical: 32,
+        horizontal: 12,
+      ),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         child: Form(
           key: _formKey,
           child: Padding(
@@ -100,12 +100,11 @@ class __UserCardState extends State<_UserCard> {
                 TextButton(
                   onPressed: () {
                     if (!_formKey.currentState!.validate()) return;
-
                     _formKey.currentState!.save();
 
-                    context.read<UserStore>().addUser(
-                          User(name: name, email: email),
-                        );
+                    context
+                        .read<UserStore>()
+                        .addUser(User(name: name, email: email));
 
                     Navigator.of(context).pop();
                   },
@@ -120,8 +119,8 @@ class __UserCardState extends State<_UserCard> {
   }
 }
 
-class _MyDrawer extends StatelessWidget {
-  const _MyDrawer({Key? key}) : super(key: key);
+class UserDrawer extends StatelessWidget {
+  const UserDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +134,9 @@ class _MyDrawer extends StatelessWidget {
             padding: EdgeInsets.zero,
             children: [
               DrawerHeader(
-                decoration: BoxDecoration(color: Theme.of(context).accentColor),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).accentColor,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,

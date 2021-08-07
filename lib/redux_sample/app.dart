@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:six_paths_core/six_paths_core.dart';
 
 import 'app_redux/app_redux.dart';
 export 'app_redux/app_redux.dart' show appReducers;

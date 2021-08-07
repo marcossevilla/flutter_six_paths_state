@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../shared/models/user.dart';
+import 'package:six_paths_core/six_paths_core.dart';
 
 class BasicApp extends StatelessWidget {
   @override

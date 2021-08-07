@@ -1,4 +1,4 @@
-import '../../../shared/models/user.dart';
+import 'package:six_paths_core/six_paths_core.dart';
 
 part 'app_actions.dart';
 part 'app_state.dart';
