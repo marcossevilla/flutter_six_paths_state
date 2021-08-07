@@ -30,12 +30,21 @@ class HomeView extends StatelessWidget {
       appBar: AppBar(title: const Text('Provider')),
       drawer: UserDrawer(),
       body: Center(child: Text(currentUser?.email ?? 'no-user')),
-      floatingActionButton: FloatingActionButton.extended(
-        label: const Text('New user'),
-        onPressed: () {
-          Scaffold.of(context).showBottomSheet((_) => UserCard());
-        },
-      ),
+      floatingActionButton: const ProfileAddAccountButton(),
+    );
+  }
+}
+
+class ProfileAddAccountButton extends StatelessWidget {
+  const ProfileAddAccountButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton.extended(
+      label: const Text('New user'),
+      onPressed: () {
+        Scaffold.of(context).showBottomSheet((_) => UserCard());
+      },
     );
   }
 }
@@ -117,7 +126,6 @@ class UserDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userNotifier = context.watch<UserNotifier>();
-
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Drawer(
@@ -125,7 +133,9 @@ class UserDrawer extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Theme.of(context).accentColor),
+              decoration: BoxDecoration(
+                color: Theme.of(context).accentColor,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,

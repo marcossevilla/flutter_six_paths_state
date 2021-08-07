@@ -64,16 +64,19 @@ class ProfileAccountList extends StatelessWidget {
       },
       builder: (_, accounts) {
         if (accounts.isNotEmpty) {
-          for (final account in accounts) {
-            return ListTile(
-              title: Text(account.name),
-              subtitle: Text(account.email),
-              onTap: () {
-                final event = ProfileCurrentAccountChanged(account);
-                context.read<ProfileBloc>().add(event);
-              },
-            );
-          }
+          return Column(
+            children: [
+              for (final account in accounts)
+                ListTile(
+                  title: Text(account.name),
+                  subtitle: Text(account.email),
+                  onTap: () {
+                    final event = ProfileCurrentAccountChanged(account);
+                    context.read<ProfileBloc>().add(event);
+                  },
+                )
+            ],
+          );
         }
 
         return const SizedBox.shrink();
