@@ -25,14 +25,30 @@ class _HomeViewState extends State<HomeView> {
       body: Center(
         child: Text(currentUser?.email ?? 'no-user'),
       ),
-      drawer: _buildDrawer(),
-      floatingActionButton: ProfileAddAccountButton(
-        addUser: addUser,
-      ),
+      drawer: ProfileDrawer(onUpdate: updateUser(user)),
+      floatingActionButton: ProfileAddAccountButton(addUser: addUser),
     );
   }
 
-  Widget _buildDrawer() {
+  void addUser(String name, String email) {
+    final user = User(name: name, email: email);
+    users.add(user);
+    updateUser(user);
+  }
+
+  void updateUser(User user) => setState(() => currentUser = user);
+}
+
+class ProfileDrawer extends StatelessWidget {
+  const ProfileDrawer({
+    Key? key, 
+    required this.onUpdate,
+  }) : super(key: key);
+
+  final Function(User) onUpdate;
+
+  @override
+  Widget build(BuildContext context) {
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Drawer(
@@ -40,7 +56,9 @@ class _HomeViewState extends State<HomeView> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Theme.of(context).accentColor),
+              decoration: BoxDecoration(
+                color: Theme.of(context).accentColor,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,21 +75,13 @@ class _HomeViewState extends State<HomeView> {
                 ListTile(
                   title: Text(user.name),
                   subtitle: Text(user.email),
-                  onTap: () => updateUser(user),
+                  onTap: () => onUpdate,
                 )
           ],
         ),
       ),
     );
   }
-
-  void addUser(String name, String email) {
-    final user = User(name: name, email: email);
-    users.add(user);
-    updateUser(user);
-  }
-
-  void updateUser(User user) => setState(() => currentUser = user);
 }
 
 class ProfileAddAccountButton extends StatelessWidget {
