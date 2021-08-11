@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_six_paths_state/provider_sample/providers/providers.dart';
 import 'package:provider/provider.dart';
 import 'package:six_paths_core/six_paths_core.dart';
-
-import 'providers/user_provider.dart';
 
 class ProviderApp extends StatelessWidget {
   const ProviderApp({Key? key}) : super(key: key);
@@ -12,7 +11,7 @@ class ProviderApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => UserNotifier(),
-      child: HomeView(),
+      child: const HomeView(),
     );
   }
 }
@@ -28,7 +27,7 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Provider')),
-      drawer: UserDrawer(),
+      drawer: const UserDrawer(),
       body: Center(child: Text(currentUser?.email ?? 'no-user')),
       floatingActionButton: const ProfileAddAccountButton(),
     );
@@ -43,7 +42,9 @@ class ProfileAddAccountButton extends StatelessWidget {
     return FloatingActionButton.extended(
       label: const Text('New user'),
       onPressed: () {
-        Scaffold.of(context).showBottomSheet((_) => UserCard());
+        Scaffold.of(context).showBottomSheet<Widget>(
+          (_) => const UserCard(),
+        );
       },
     );
   }
@@ -142,7 +143,7 @@ class UserDrawer extends StatelessWidget {
                 children: [
                   Text(
                     userNotifier.currentUser?.email ?? 'no-user',
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ],
               ),

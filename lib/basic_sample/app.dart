@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:six_paths_core/six_paths_core.dart';
 
 class BasicApp extends StatelessWidget {
+  const BasicApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) => const HomeView();
 }
@@ -21,11 +23,17 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('setState')),
+      appBar: AppBar(
+        title: const Text('setState'),
+      ),
       body: Center(
         child: Text(currentUser?.email ?? 'no-user'),
       ),
-      drawer: ProfileDrawer(onUpdate: updateUser(user)),
+      drawer: ProfileDrawer(
+        currentUser: currentUser,
+        users: users,
+        onUpdate: () => updateUser(currentUser),
+      ),
       floatingActionButton: ProfileAddAccountButton(addUser: addUser),
     );
   }
@@ -36,16 +44,20 @@ class _HomeViewState extends State<HomeView> {
     updateUser(user);
   }
 
-  void updateUser(User user) => setState(() => currentUser = user);
+  void updateUser(User? user) => setState(() => currentUser = user);
 }
 
 class ProfileDrawer extends StatelessWidget {
   const ProfileDrawer({
     Key? key,
+    required this.currentUser,
+    required this.users,
     required this.onUpdate,
   }) : super(key: key);
 
-  final Function(User) onUpdate;
+  final User? currentUser;
+  final List<User> users;
+  final Function onUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +77,7 @@ class ProfileDrawer extends StatelessWidget {
                 children: [
                   Text(
                     currentUser?.email ?? 'no-user',
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ],
               ),
@@ -97,7 +109,7 @@ class ProfileAddAccountButton extends StatelessWidget {
     return FloatingActionButton.extended(
       label: const Text('New user'),
       onPressed: () {
-        Scaffold.of(context).showBottomSheet(
+        Scaffold.of(context).showBottomSheet<Widget>(
           (_) => UserCard(addUser: addUser),
         );
       },

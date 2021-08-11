@@ -34,7 +34,7 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textHeaderStyle = TextStyle(color: Colors.black);
+    const textHeaderStyle = TextStyle(color: Colors.black);
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (_, state) {
         return Column(
@@ -42,7 +42,7 @@ class ProfileHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (state is ProfileInitial)
-              Text('no-user', style: textHeaderStyle),
+              const Text('no-user', style: textHeaderStyle),
             if (state is ProfileLoaded)
               Text(state.current.email, style: textHeaderStyle),
           ],

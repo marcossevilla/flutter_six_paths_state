@@ -15,9 +15,10 @@ abstract class _UserBase with Store {
   @action
   void addUser(User value) {
     accounts.add(value);
-    setCurrent(value);
+    changeCurrent(value);
   }
 
+  // ignore: use_setters_to_change_properties
   @action
-  void setCurrent(User value) => current = value;
+  void changeCurrent(User value) => current = value;
 }

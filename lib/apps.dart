@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_six_paths_state/basic_sample/app.dart';
+import 'package:flutter_six_paths_state/bloc_sample/app.dart';
+import 'package:flutter_six_paths_state/getx_sample/app.dart';
+import 'package:flutter_six_paths_state/mobx_sample/app.dart';
+import 'package:flutter_six_paths_state/provider_sample/app.dart';
+import 'package:flutter_six_paths_state/redux_sample/app.dart';
 import 'package:redux/redux.dart';
-
-import 'getx_sample/app.dart';
-import 'mobx_sample/app.dart';
-import 'bloc_sample/app.dart';
-import 'basic_sample/app.dart';
-import 'provider_sample/app.dart';
-
-import 'redux_sample/app.dart';
-import 'redux_sample/app_redux/app_redux.dart';
 
 class SixPathsStateApp extends StatelessWidget {
   const SixPathsStateApp({
@@ -22,12 +18,12 @@ class SixPathsStateApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final apps = [
-      BasicApp(),
-      ProviderApp(),
-      BlocApp(),
+      const BasicApp(),
+      const ProviderApp(),
+      const BlocApp(),
       ReduxApp(store: store),
-      MobxApp(),
-      GetXApp(),
+      const MobxApp(),
+      const GetXApp(),
     ];
 
     return MaterialApp(
@@ -39,7 +35,7 @@ class SixPathsStateApp extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               title: Text('${apps[index]}'),
-              onTap: () => Navigator.of(context).push(
+              onTap: () => Navigator.of(context).push<Widget>(
                 MaterialPageRoute(builder: (context) => apps[index]),
               ),
             );
