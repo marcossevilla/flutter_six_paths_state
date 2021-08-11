@@ -41,7 +41,7 @@ class _HomeViewState extends State<HomeView> {
 
 class ProfileDrawer extends StatelessWidget {
   const ProfileDrawer({
-    Key? key, 
+    Key? key,
     required this.onUpdate,
   }) : super(key: key);
 
