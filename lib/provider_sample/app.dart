@@ -143,7 +143,7 @@ class UserDrawer extends StatelessWidget {
                 children: [
                   Text(
                     userNotifier.currentUser?.email ?? 'no-user',
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ],
               ),
