@@ -9,7 +9,7 @@ class UserNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  List<User> _users = [];
+  final _users = <User>[];
   List<User> get users => _users;
 
   void addUser(User user) {

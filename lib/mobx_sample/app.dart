@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_six_paths_state/mobx_sample/stores/stores.dart';
+import 'package:provider/provider.dart';
 import 'package:six_paths_core/six_paths_core.dart';
-
-import 'stores/user_store.dart';
 
 class MobxApp extends StatelessWidget {
   const MobxApp({Key? key}) : super(key: key);
@@ -27,7 +25,7 @@ class HomeView extends StatelessWidget {
     final store = context.watch<UserStore>();
     return Scaffold(
       appBar: AppBar(title: const Text('MobX')),
-      drawer: UserDrawer(),
+      drawer: const UserDrawer(),
       body: Center(
         child: Observer(
           builder: (_) => Text(store.current?.email ?? 'no-user'),
@@ -46,7 +44,9 @@ class ProfileAddAccountButton extends StatelessWidget {
     return FloatingActionButton.extended(
       label: const Text('New user'),
       onPressed: () {
-        Scaffold.of(context).showBottomSheet<Widget>((_) => UserCard());
+        Scaffold.of(context).showBottomSheet<Widget>(
+          (_) => const UserCard(),
+        );
       },
     );
   }
@@ -147,7 +147,7 @@ class UserDrawer extends StatelessWidget {
                   children: [
                     Text(
                       store.current?.email ?? 'no-email',
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                     ),
                   ],
                 ),
@@ -156,7 +156,7 @@ class UserDrawer extends StatelessWidget {
                 for (var account in store.accounts)
                   ListTile(
                     title: Text(account.name),
-                    subtitle: Text((account.email)),
+                    subtitle: Text(account.email),
                     onTap: () => store.current = account,
                   )
             ],

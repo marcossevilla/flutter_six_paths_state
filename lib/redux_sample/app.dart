@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_six_paths_state/redux_sample/app_redux/app_redux.dart';
+import 'package:redux/redux.dart';
 import 'package:six_paths_core/six_paths_core.dart';
 
-import 'app_redux/app_redux.dart';
-export 'app_redux/app_redux.dart' show appReducers;
+export 'app_redux/app_redux.dart' show appReducers, AppState;
 
 class ReduxApp extends StatelessWidget {
   const ReduxApp({
@@ -32,14 +32,14 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Redux'),
+        title: const Text('Redux'),
       ),
       body: StoreConnector<AppState, String>(
         converter: (store) => store.state.current?.email ?? 'no-user',
         builder: (_, state) => Center(child: Text(state)),
       ),
-      drawer: UserDrawer(),
-      floatingActionButton: ProfileAddAccountButton(),
+      drawer: const UserDrawer(),
+      floatingActionButton: const ProfileAddAccountButton(),
     );
   }
 }
@@ -52,7 +52,9 @@ class ProfileAddAccountButton extends StatelessWidget {
     return FloatingActionButton.extended(
       label: const Text('New user'),
       onPressed: () {
-        Scaffold.of(context).showBottomSheet((_) => UserCard());
+        Scaffold.of(context).showBottomSheet<Widget>(
+          (_) => const UserCard(),
+        );
       },
     );
   }
@@ -152,7 +154,7 @@ class UserDrawer extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).accentColor,
                   ),
-                  child: _DrawerHeader(),
+                  child: const _DrawerHeader(),
                 ),
                 if (accounts.isNotEmpty)
                   for (var user in accounts) _AccountTile(user: user)
@@ -199,7 +201,10 @@ class _DrawerHeader extends StatelessWidget {
         StoreConnector<AppState, String>(
           converter: (store) => store.state.current?.email ?? 'no-user',
           builder: (context, state) {
-            return Text(state, style: TextStyle(color: Colors.black));
+            return Text(
+              state,
+              style: const TextStyle(color: Colors.black),
+            );
           },
         ),
       ],

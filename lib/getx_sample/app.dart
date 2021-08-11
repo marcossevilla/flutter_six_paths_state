@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_six_paths_state/getx_sample/controllers/user_controller.dart';
 import 'package:get/get.dart';
 import 'package:six_paths_core/six_paths_core.dart';
-
-import 'controllers/user_controller.dart';
 
 class GetXApp extends StatelessWidget {
   const GetXApp({Key? key}) : super(key: key);
@@ -16,7 +15,7 @@ class GetXApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'GetX',
       theme: ThemeData.dark(),
-      home: HomeView(),
+      home: const HomeView(),
     );
   }
 }
@@ -29,7 +28,7 @@ class HomeView extends StatelessWidget {
     final userController = Get.find<UserController>();
     return Scaffold(
       appBar: AppBar(title: const Text('GetX')),
-      drawer: UserDrawer(),
+      drawer: const UserDrawer(),
       body: Center(
         child: Obx(() => Text(userController.current.value.email)),
       ),
@@ -46,7 +45,9 @@ class ProfileAddAccountButton extends StatelessWidget {
     return FloatingActionButton.extended(
       label: const Text('New user'),
       onPressed: () {
-        Scaffold.of(context).showBottomSheet<Widget>((_) => UserCard());
+        Scaffold.of(context).showBottomSheet<Widget>(
+          (_) => const UserCard(),
+        );
       },
     );
   }
@@ -110,7 +111,7 @@ class _UserCardState extends State<UserCard> {
                     controller.addUser(User(name: name, email: email));
 
                     Navigator.of(context).pop();
-                    Get.snackbar('Saved!', 'User saved successfully');
+                    Get.snackbar<Widget>('Saved!', 'User saved successfully');
                   },
                   child: const Text('Save'),
                 ),
@@ -147,7 +148,7 @@ class UserDrawer extends StatelessWidget {
                   children: [
                     Text(
                       controller.current.value.email,
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                     ),
                   ],
                 ),
@@ -157,7 +158,7 @@ class UserDrawer extends StatelessWidget {
                   ListTile(
                     title: Text(user.name),
                     subtitle: Text(user.email),
-                    onTap: () => controller.setCurrent(user),
+                    onTap: () => controller.changeCurrent(user),
                   )
             ],
           ),

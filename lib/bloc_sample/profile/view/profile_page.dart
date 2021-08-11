@@ -33,7 +33,7 @@ class ProfileView extends StatelessWidget {
           }
         },
       ),
-      floatingActionButton: ProfileAddAccountButton(),
+      floatingActionButton: const ProfileAddAccountButton(),
     );
   }
 }
@@ -46,7 +46,9 @@ class ProfileAddAccountButton extends StatelessWidget {
     return FloatingActionButton.extended(
       label: const Text('New user'),
       onPressed: () {
-        Scaffold.of(context).showBottomSheet((_) => ProfileCard());
+        Scaffold.of(context).showBottomSheet<Widget>(
+          (_) => const ProfileCard(),
+        );
       },
     );
   }

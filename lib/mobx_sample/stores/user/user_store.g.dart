@@ -53,11 +53,11 @@ mixin _$UserStore on _UserBase, Store {
   }
 
   @override
-  void setCurrent(User value) {
-    final _$actionInfo =
-        _$_UserBaseActionController.startAction(name: '_UserBase.setCurrent');
+  void changeCurrent(User value) {
+    final _$actionInfo = _$_UserBaseActionController.startAction(
+        name: '_UserBase.changeCurrent');
     try {
-      return super.setCurrent(value);
+      return super.changeCurrent(value);
     } finally {
       _$_UserBaseActionController.endAction(_$actionInfo);
     }

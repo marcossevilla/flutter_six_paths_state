@@ -3,7 +3,10 @@ import 'package:six_paths_core/six_paths_core.dart';
 part 'app_actions.dart';
 part 'app_state.dart';
 
-AppState appReducers(AppState state, dynamic action) {
+AppState appReducers(
+  AppState state,
+  dynamic action,
+) {
   if (action is AddAccountAction) {
     return addAccount(state, action);
   } else if (action is SetCurrentUserAction) {
@@ -12,10 +15,22 @@ AppState appReducers(AppState state, dynamic action) {
   return state;
 }
 
-AppState addAccount(AppState state, AddAccountAction action) {
-  return AppState(action.account, state.accounts..add(action.account));
+AppState addAccount(
+  AppState state,
+  AddAccountAction action,
+) {
+  return AppState(
+    current: action.account,
+    accounts: state.accounts..add(action.account),
+  );
 }
 
-AppState setCurrentUser(AppState state, SetCurrentUserAction action) {
-  return AppState(action.user, state.accounts);
+AppState setCurrentUser(
+  AppState state,
+  SetCurrentUserAction action,
+) {
+  return AppState(
+    current: action.user,
+    accounts: state.accounts,
+  );
 }
