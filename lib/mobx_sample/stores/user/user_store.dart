@@ -18,7 +18,7 @@ abstract class _UserBase with Store {
     changeCurrent(value);
   }
 
-  // ignore: use_setters_to_change_properties
   @action
+  // ignore: use_setters_to_change_properties
   void changeCurrent(User value) => current = value;
 }
