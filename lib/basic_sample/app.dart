@@ -32,7 +32,7 @@ class _HomeViewState extends State<HomeView> {
       drawer: ProfileDrawer(
         currentUser: currentUser,
         users: users,
-        onUpdate: () => updateUser(currentUser),
+        onUserUpdate: updateUser,
       ),
       floatingActionButton: ProfileAddAccountButton(addUser: addUser),
     );
@@ -52,15 +52,16 @@ class ProfileDrawer extends StatelessWidget {
     Key? key,
     required this.currentUser,
     required this.users,
-    required this.onUpdate,
+    required this.onUserUpdate,
   }) : super(key: key);
 
   final User? currentUser;
   final List<User> users;
-  final Function onUpdate;
+  final Function(User?) onUserUpdate;
 
   @override
   Widget build(BuildContext context) {
+    const headerTextStyle = TextStyle(color: Colors.black);
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Drawer(
@@ -68,8 +69,20 @@ class ProfileDrawer extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text(currentUser?.name ?? 'no-name'),
-              accountEmail: Text(currentUser?.email ?? 'no-user'),
+              currentAccountPicture: CircleAvatar(
+                child: Text(
+                  currentUser?.name.characters.first.toUpperCase() ?? '?',
+                ),
+              ),
+              currentAccountPictureSize: const Size.square(50),
+              accountName: Text(
+                currentUser?.name ?? 'no-name',
+                style: headerTextStyle,
+              ),
+              accountEmail: Text(
+                currentUser?.email ?? 'no-user',
+                style: headerTextStyle,
+              ),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.secondary,
               ),
@@ -79,8 +92,8 @@ class ProfileDrawer extends StatelessWidget {
                 ListTile(
                   title: Text(user.name),
                   subtitle: Text(user.email),
-                  onTap: () => onUpdate,
-                )
+                  onTap: () => onUserUpdate(user),
+                ),
           ],
         ),
       ),
@@ -101,7 +114,7 @@ class ProfileAddAccountButton extends StatelessWidget {
     return FloatingActionButton.extended(
       label: const Text('New user'),
       onPressed: () {
-        Scaffold.of(context).showBottomSheet<Widget>(
+        Scaffold.of(context).showBottomSheet<void>(
           (_) => UserCard(addUser: addUser),
         );
       },
