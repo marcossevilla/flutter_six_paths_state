@@ -14,14 +14,9 @@ class ProfileDrawer extends StatelessWidget {
       child: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-              child: const ProfileHeader(),
-            ),
-            const ProfileAccountList(),
+          children: const [
+            ProfileHeader(),
+            ProfileAccountList(),
           ],
         ),
       ),
@@ -35,17 +30,26 @@ class ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const textHeaderStyle = TextStyle(color: Colors.black);
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      builder: (_, state) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (state is ProfileInitial)
-              const Text('no-user', style: textHeaderStyle),
-            if (state is ProfileLoaded)
-              Text(state.current.email, style: textHeaderStyle),
-          ],
+
+    return BlocSelector<ProfileBloc, ProfileState, List<String>>(
+      selector: (state) {
+        if (state is ProfileLoaded) {
+          return [state.current.email, state.current.name];
+        } else {
+          return ['no-email', 'no-name'];
+        }
+      },
+      builder: (context, state) {
+        return UserAccountsDrawerHeader(
+          currentAccountPicture: CircleAvatar(
+            child: Text(state.first.characters.first.toUpperCase()),
+          ),
+          currentAccountPictureSize: const Size.square(50),
+          accountName: Text(state.first, style: textHeaderStyle),
+          accountEmail: Text(state.last, style: textHeaderStyle),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
         );
       },
     );
