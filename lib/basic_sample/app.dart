@@ -67,19 +67,11 @@ class ProfileDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
+            UserAccountsDrawerHeader(
+              accountName: Text(currentUser?.name ?? 'no-name'),
+              accountEmail: Text(currentUser?.email ?? 'no-user'),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.secondary,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    currentUser?.email ?? 'no-user',
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                ],
               ),
             ),
             if (users.isNotEmpty)
