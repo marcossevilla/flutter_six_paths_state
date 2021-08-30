@@ -20,13 +20,13 @@ class ReduxApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
       store: _store,
-      child: const HomeView(),
+      child: const HomePage(),
     );
   }
 }
 
-class HomeView extends StatelessWidget {
-  const HomeView({Key? key}) : super(key: key);
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class ProfileAddAccountButton extends StatelessWidget {
     return FloatingActionButton.extended(
       label: const Text('New user'),
       onPressed: () {
-        Scaffold.of(context).showBottomSheet<Widget>(
+        Scaffold.of(context).showBottomSheet<void>(
           (_) => const UserCard(),
         );
       },
@@ -60,18 +60,8 @@ class ProfileAddAccountButton extends StatelessWidget {
   }
 }
 
-class UserCard extends StatefulWidget {
+class UserCard extends StatelessWidget {
   const UserCard({Key? key}) : super(key: key);
-
-  @override
-  _UserCardState createState() => _UserCardState();
-}
-
-class _UserCardState extends State<UserCard> {
-  final _formKey = GlobalKey<FormState>();
-
-  String _name = '';
-  String _email = '';
 
   @override
   Widget build(BuildContext context) {
@@ -84,52 +74,69 @@ class _UserCardState extends State<UserCard> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    labelText: 'Name',
-                  ),
-                  validator: (value) =>
-                      value!.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => _name = newValue!),
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    labelText: 'Email',
-                  ),
-                  validator: (value) =>
-                      value!.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => _email = newValue!),
-                ),
-                StoreConnector<AppState, OnAccountAdded>(
-                  converter: (store) {
-                    return (item) => store.dispatch(AddAccountAction(item));
-                  },
-                  builder: (context, addUser) {
-                    return TextButton(
-                      onPressed: () {
-                        if (!_formKey.currentState!.validate()) return;
-                        _formKey.currentState!.save();
+        child: const UserForm(),
+      ),
+    );
+  }
+}
 
-                        addUser(User(email: _email, name: _name));
+class UserForm extends StatefulWidget {
+  const UserForm({Key? key}) : super(key: key);
 
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Save'),
-                    );
-                  },
-                ),
-              ],
+  @override
+  _UserFormState createState() => _UserFormState();
+}
+
+class _UserFormState extends State<UserForm> {
+  final formKey = GlobalKey<FormState>();
+
+  String name = '';
+  String email = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                labelText: 'Name',
+              ),
+              validator: (value) => value!.trim().isEmpty ? 'Fill up' : null,
+              onSaved: (newValue) => setState(() => name = newValue!),
             ),
-          ),
+            TextFormField(
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                labelText: 'Email',
+              ),
+              validator: (value) => value!.trim().isEmpty ? 'Fill up' : null,
+              onSaved: (newValue) => setState(() => email = newValue!),
+            ),
+            StoreConnector<AppState, OnAccountAdded>(
+              converter: (store) {
+                return (item) => store.dispatch(AddAccountAction(item));
+              },
+              builder: (context, addUser) {
+                return TextButton(
+                  onPressed: () {
+                    if (!formKey.currentState!.validate()) return;
+                    formKey.currentState!.save();
+
+                    addUser(User(email: email, name: name));
+
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Save'),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -150,14 +157,9 @@ class UserDrawer extends StatelessWidget {
             return ListView(
               padding: EdgeInsets.zero,
               children: [
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  child: const _DrawerHeader(),
-                ),
+                const ProfileHeader(),
                 if (accounts.isNotEmpty)
-                  for (var user in accounts) _AccountTile(user: user)
+                  for (var user in accounts) AccountTile(user: user)
               ],
             );
           },
@@ -167,8 +169,37 @@ class UserDrawer extends StatelessWidget {
   }
 }
 
-class _AccountTile extends StatelessWidget {
-  const _AccountTile({Key? key, required this.user}) : super(key: key);
+class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    const headerTextStyle = TextStyle(color: Colors.black);
+    return StoreConnector<AppState, List<String>>(
+      converter: (store) {
+        return [
+          store.state.current?.email ?? 'no-email',
+          store.state.current?.name ?? 'no-name',
+        ];
+      },
+      builder: (context, state) {
+        return UserAccountsDrawerHeader(
+          accountEmail: Text(state.first, style: headerTextStyle),
+          accountName: Text(state.last, style: headerTextStyle),
+          currentAccountPicture: CircleAvatar(
+            child: Text(state.first.characters.first.toUpperCase()),
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class AccountTile extends StatelessWidget {
+  const AccountTile({Key? key, required this.user}) : super(key: key);
 
   final User user;
 
@@ -185,29 +216,6 @@ class _AccountTile extends StatelessWidget {
           onTap: () => setCurrent(user),
         );
       },
-    );
-  }
-}
-
-class _DrawerHeader extends StatelessWidget {
-  const _DrawerHeader({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        StoreConnector<AppState, String>(
-          converter: (store) => store.state.current?.email ?? 'no-user',
-          builder: (context, state) {
-            return Text(
-              state,
-              style: const TextStyle(color: Colors.black),
-            );
-          },
-        ),
-      ],
     );
   }
 }
