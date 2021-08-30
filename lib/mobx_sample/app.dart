@@ -12,13 +12,13 @@ class MobxApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider(
       create: (_) => UserStore(),
-      child: const HomeView(),
+      child: const HomePage(),
     );
   }
 }
 
-class HomeView extends StatelessWidget {
-  const HomeView({Key? key}) : super(key: key);
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class ProfileAddAccountButton extends StatelessWidget {
     return FloatingActionButton.extended(
       label: const Text('New user'),
       onPressed: () {
-        Scaffold.of(context).showBottomSheet<Widget>(
+        Scaffold.of(context).showBottomSheet<void>(
           (_) => const UserCard(),
         );
       },
@@ -60,11 +60,6 @@ class UserCard extends StatefulWidget {
 }
 
 class _UserCardState extends State<UserCard> {
-  final _formKey = GlobalKey<FormState>();
-
-  String name = '';
-  String email = '';
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -76,47 +71,64 @@ class _UserCardState extends State<UserCard> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    labelText: 'Name',
-                  ),
-                  validator: (value) =>
-                      value!.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => name = newValue!),
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    labelText: 'Email',
-                  ),
-                  validator: (value) =>
-                      value!.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => email = newValue!),
-                ),
-                TextButton(
-                  onPressed: () {
-                    if (!_formKey.currentState!.validate()) return;
-                    _formKey.currentState!.save();
+        child: const UserForm(),
+      ),
+    );
+  }
+}
 
-                    context
-                        .read<UserStore>()
-                        .addUser(User(name: name, email: email));
+class UserForm extends StatefulWidget {
+  const UserForm({Key? key}) : super(key: key);
 
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Save'),
-                ),
-              ],
+  @override
+  _UserFormState createState() => _UserFormState();
+}
+
+class _UserFormState extends State<UserForm> {
+  final formKey = GlobalKey<FormState>();
+
+  String name = '';
+  String email = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                labelText: 'Name',
+              ),
+              validator: (value) => value!.trim().isEmpty ? 'Fill up' : null,
+              onSaved: (newValue) => setState(() => name = newValue!),
             ),
-          ),
+            TextFormField(
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                labelText: 'Email',
+              ),
+              validator: (value) => value!.trim().isEmpty ? 'Fill up' : null,
+              onSaved: (newValue) => setState(() => email = newValue!),
+            ),
+            TextButton(
+              onPressed: () {
+                if (!formKey.currentState!.validate()) return;
+                formKey.currentState!.save();
+
+                context
+                    .read<UserStore>()
+                    .addUser(User(name: name, email: email));
+
+                Navigator.of(context).pop();
+              },
+              child: const Text('Save'),
+            ),
+          ],
         ),
       ),
     );
@@ -129,7 +141,7 @@ class UserDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final store = Provider.of<UserStore>(context);
-
+    const headerTextStyle = TextStyle(color: Colors.black);
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Drawer(
@@ -137,19 +149,22 @@ class UserDrawer extends StatelessWidget {
           builder: (_) => ListView(
             padding: EdgeInsets.zero,
             children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).accentColor,
+              UserAccountsDrawerHeader(
+                currentAccountPicture: CircleAvatar(
+                  child: Text(
+                    store.current?.name.characters.first.toUpperCase() ?? '?',
+                  ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      store.current?.email ?? 'no-email',
-                      style: const TextStyle(color: Colors.black),
-                    ),
-                  ],
+                accountEmail: Text(
+                  store.current?.email ?? 'no-email',
+                  style: headerTextStyle,
+                ),
+                accountName: Text(
+                  store.current?.email ?? 'no-name',
+                  style: headerTextStyle,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               if (store.accounts.isNotEmpty)

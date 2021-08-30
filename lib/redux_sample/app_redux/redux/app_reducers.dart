@@ -21,7 +21,7 @@ AppState addAccount(
 ) {
   return AppState(
     current: action.account,
-    accounts: state.accounts..add(action.account),
+    accounts: [...state.accounts, action.account],
   );
 }
 
