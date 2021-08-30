@@ -45,7 +45,7 @@ class ProfileAddAccountButton extends StatelessWidget {
     return FloatingActionButton.extended(
       label: const Text('New user'),
       onPressed: () {
-        Scaffold.of(context).showBottomSheet<Widget>(
+        Scaffold.of(context).showBottomSheet<void>(
           (_) => const UserCard(),
         );
       },
@@ -53,22 +53,11 @@ class ProfileAddAccountButton extends StatelessWidget {
   }
 }
 
-class UserCard extends StatefulWidget {
+class UserCard extends StatelessWidget {
   const UserCard({Key? key}) : super(key: key);
 
   @override
-  _UserCardState createState() => _UserCardState();
-}
-
-class _UserCardState extends State<UserCard> {
-  final _formKey = GlobalKey<FormState>();
-
-  String name = '';
-  String email = '';
-
-  @override
   Widget build(BuildContext context) {
-    final controller = Get.find<UserController>();
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: 32,
@@ -78,46 +67,64 @@ class _UserCardState extends State<UserCard> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    labelText: 'Name',
-                  ),
-                  validator: (value) =>
-                      value!.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => name = newValue!),
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    labelText: 'Email',
-                  ),
-                  validator: (value) =>
-                      value!.trim().isEmpty ? 'Fill up' : null,
-                  onSaved: (newValue) => setState(() => email = newValue!),
-                ),
-                TextButton(
-                  onPressed: () {
-                    if (!_formKey.currentState!.validate()) return;
+        child: const UserForm(),
+      ),
+    );
+  }
+}
 
-                    _formKey.currentState!.save();
-                    controller.addUser(User(name: name, email: email));
+class UserForm extends StatefulWidget {
+  const UserForm({Key? key}) : super(key: key);
 
-                    Navigator.of(context).pop();
-                    Get.snackbar<Widget>('Saved!', 'User saved successfully');
-                  },
-                  child: const Text('Save'),
-                ),
-              ],
+  @override
+  _UserFormState createState() => _UserFormState();
+}
+
+class _UserFormState extends State<UserForm> {
+  final formKey = GlobalKey<FormState>();
+
+  String name = '';
+  String email = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.find<UserController>();
+    return Form(
+      key: formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                labelText: 'Name',
+              ),
+              validator: (value) => value!.trim().isEmpty ? 'Fill up' : null,
+              onSaved: (newValue) => setState(() => name = newValue!),
             ),
-          ),
+            TextFormField(
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                labelText: 'Email',
+              ),
+              validator: (value) => value!.trim().isEmpty ? 'Fill up' : null,
+              onSaved: (newValue) => setState(() => email = newValue!),
+            ),
+            TextButton(
+              onPressed: () {
+                if (!formKey.currentState!.validate()) return;
+                formKey.currentState!.save();
+
+                controller.addUser(User(name: name, email: email));
+
+                Navigator.of(context).pop();
+                Get.snackbar<void>('Saved!', 'User saved successfully');
+              },
+              child: const Text('Save'),
+            ),
+          ],
         ),
       ),
     );
@@ -129,8 +136,8 @@ class UserDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const headerTextStyle = TextStyle(color: Colors.black);
     final controller = Get.find<UserController>();
-
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Drawer(
@@ -138,19 +145,23 @@ class UserDrawer extends StatelessWidget {
           () => ListView(
             padding: EdgeInsets.zero,
             children: [
-              DrawerHeader(
+              UserAccountsDrawerHeader(
+                currentAccountPicture: CircleAvatar(
+                  child: Text(
+                    controller.current.value.name.characters.first
+                        .toUpperCase(),
+                  ),
+                ),
+                accountEmail: Text(
+                  controller.current.value.email,
+                  style: headerTextStyle,
+                ),
+                accountName: Text(
+                  controller.current.value.name,
+                  style: headerTextStyle,
+                ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.secondary,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      controller.current.value.email,
-                      style: const TextStyle(color: Colors.black),
-                    ),
-                  ],
                 ),
               ),
               if (controller.accounts.isNotEmpty)
