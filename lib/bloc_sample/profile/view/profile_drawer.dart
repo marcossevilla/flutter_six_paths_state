@@ -29,8 +29,7 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const textHeaderStyle = TextStyle(color: Colors.black);
-
+    const headerTextStyle = TextStyle(color: Colors.black);
     return BlocSelector<ProfileBloc, ProfileState, List<String>>(
       selector: (state) {
         if (state is ProfileLoaded) {
@@ -45,8 +44,8 @@ class ProfileHeader extends StatelessWidget {
             child: Text(state.first.characters.first.toUpperCase()),
           ),
           currentAccountPictureSize: const Size.square(50),
-          accountName: Text(state.first, style: textHeaderStyle),
-          accountEmail: Text(state.last, style: textHeaderStyle),
+          accountName: Text(state.first, style: headerTextStyle),
+          accountEmail: Text(state.last, style: headerTextStyle),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.secondary,
           ),
